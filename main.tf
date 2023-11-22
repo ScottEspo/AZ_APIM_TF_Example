@@ -1,16 +1,6 @@
-# resource "random_pet" "rg_name" {
-#   prefix = var.resource_group_name_prefix
-# }
-
-# resource "azurerm_resource_group" "rg_pet" {
-#   name     = random_pet.rg_name.id
-#   location = var.resource_group_location
-# }
-
-# resource "azurerm_resource_group" "rg" {
-#   name     = "myTFResourceGroup"
-#   location = "westus2"
-# }
+################################################
+### Create Random Values
+################################################
 
 resource "random_string" "azurerm_api_management_name" {
   length  = 13
@@ -20,25 +10,41 @@ resource "random_string" "azurerm_api_management_name" {
   upper   = false
 }
 
+################################################
+### Create a Resource Group
+################################################
+# looking up existing RG from data.tf
+
+# resource "azurerm_resource_group" "rg" {
+#   name     = "myTFResourceGroup"
+#   location = "westus2"
+# }
+
+################################################
+### Create APIM Instance
+################################################
+
 resource "azurerm_api_management" "api" {
   name = "apiservice${random_string.azurerm_api_management_name.result}"
-  # location = azurerm_resource_group.rg_pet.location
+  # location = azurerm_resource_group.rg.location   ## looking up existing RG from data.tf
   location = data.azurerm_resource_group.SN.location
-  # resource_group_name = azurerm_resource_group.rg_pet.name
+  # resource_group_name = azurerm_resource_group.rg.name   ## looking up existing RG from data.tf
   resource_group_name = data.azurerm_resource_group.SN.name
   publisher_email     = var.publisher_email
   publisher_name      = var.publisher_name
   sku_name            = "${var.sku}_${var.sku_count}"
 }
 
-
-# ### Next Create API: https://conferenceapi.azurewebsites.net
-# ## https://learn.microsoft.com/en-us/azure/api-management/import-and-publish
-# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/api_management_api
+################################################
+### Import an API
+### https://conferenceapi.azurewebsites.net
+### https://learn.microsoft.com/en-us/azure/api-management/import-and-publish
+### https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/api_management_api
+################################################
 
 resource "azurerm_api_management_api" "example" {
   name = "example-api"
-  # resource_group_name = azurerm_resource_group.rg_pet.name
+  # resource_group_name = azurerm_resource_group.rg.name    ## looking up existing RG from data.tf
   resource_group_name = data.azurerm_resource_group.SN.name
   api_management_name = azurerm_api_management.api.name
   revision            = "1"
@@ -53,16 +59,17 @@ resource "azurerm_api_management_api" "example" {
   }
 }
 
-
-# Create and publish a product
-# https://learn.microsoft.com/en-us/azure/api-management/api-management-howto-add-products?tabs=azure-portal
-# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/api_management_product
-# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/api_management_product_api
+################################################
+### Create and publish a product
+### https://learn.microsoft.com/en-us/azure/api-management/api-management-howto-add-products?tabs=azure-portal
+### https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/api_management_product
+### https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/api_management_product_api
+################################################
 
 resource "azurerm_api_management_product" "example" {
   product_id          = "test-product"
   api_management_name = azurerm_api_management.api.name
-  # resource_group_name = azurerm_resource_group.rg_pet.name
+  # resource_group_name = azurerm_resource_group.rg.name    ## looking up existing RG from data.tf
   resource_group_name   = data.azurerm_resource_group.SN.name
   display_name          = "Test Product"
   subscription_required = false
@@ -70,36 +77,38 @@ resource "azurerm_api_management_product" "example" {
   published             = true
 }
 
+################################################
+### Assign API to Product
+################################################
+
 resource "azurerm_api_management_product_api" "example" {
   api_name            = azurerm_api_management_api.example.name
   product_id          = azurerm_api_management_product.example.product_id
   api_management_name = azurerm_api_management.api.name
-  # resource_group_name = azurerm_resource_group.rg_pet.name
+  # resource_group_name = azurerm_resource_group.rg.name    ## looking up existing RG from data.tf
   resource_group_name = data.azurerm_resource_group.SN.name
 }
 
-# Add Operation
-# https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/api_management_api_operation
-
+################################################
+### Create another API from scratch, assign it to a Product and add GET Operation to it
+### https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/api_management_api_operation
+################################################
 
 resource "azurerm_api_management_api" "example_manual" {
   name = "fresh-api"
-  # resource_group_name = azurerm_resource_group.rg_pet.name
+  # resource_group_name = azurerm_resource_group.rg.name    ## looking up existing RG from data.tf
   resource_group_name = data.azurerm_resource_group.SN.name
   api_management_name = azurerm_api_management.api.name
   revision            = "1"
   display_name        = "Manual API for Mocking"
-  # path                = "conference"
-  protocols = ["http"]
-  # service_url = "http://conferenceapi.azurewebsites.net"
-
+  protocols           = ["http"]
 }
 
 resource "azurerm_api_management_product_api" "example_mock" {
   api_name            = azurerm_api_management_api.example_manual.name
   product_id          = azurerm_api_management_product.example.product_id
   api_management_name = azurerm_api_management.api.name
-  # resource_group_name = azurerm_resource_group.rg_pet.name
+  # resource_group_name = azurerm_resource_group.rg.name    ## looking up existing RG from data.tf
   resource_group_name = data.azurerm_resource_group.SN.name
 }
 
@@ -107,7 +116,7 @@ resource "azurerm_api_management_api_operation" "example" {
   operation_id        = "testOperation"
   api_name            = azurerm_api_management_api.example_manual.name
   api_management_name = azurerm_api_management.api.name
-  # resource_group_name = azurerm_resource_group.rg_pet.name
+  # resource_group_name = azurerm_resource_group.rg.name    ## looking up existing RG from data.tf
   resource_group_name = data.azurerm_resource_group.SN.name
   display_name        = "Test call"
   method              = "GET"
@@ -123,31 +132,17 @@ resource "azurerm_api_management_api_operation" "example" {
       }
     }
   }
-
-  # request {
-
-  #   description = "A description of the HTTP Request, which may include HTML tags."
-
-  # }
-
-  # template_parameter {
-  #   name     = "id"
-  #   type     = "number"
-  #   required = true
-  # }
-
-
 }
 
-
-# Tutorial: Mock API responses: https://learn.microsoft.com/en-us/azure/api-management/mock-api-responses?tabs=azure-portal
-# 
-# https://www.jeanpaulsmit.com/2020/03/terraform-deploy-apim/
+################################################
+### Create a MOCK Policy
+### Tutorial: Mock API responses: https://learn.microsoft.com/en-us/azure/api-management/mock-api-responses?tabs=azure-portal
+################################################
 
 resource "azurerm_api_management_api_operation_policy" "example" {
   api_name            = azurerm_api_management_api.example_manual.name
   api_management_name = azurerm_api_management.api.name
-  # resource_group_name = azurerm_resource_group.rg_pet.name
+  # resource_group_name = azurerm_resource_group.rg.name    ## looking up existing RG from data.tf
   resource_group_name = data.azurerm_resource_group.SN.name
   operation_id        = azurerm_api_management_api_operation.example.operation_id
 
