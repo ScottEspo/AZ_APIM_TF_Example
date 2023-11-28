@@ -3,15 +3,16 @@ module "api_example_test" {
   publisher_email = "email@test.com"
 
   api = {
-    name        = "Scott Test"
+    name        = "ScottTest"
     path        = "conference"
     protocols   = ["http"]
     service_url = "http://conferenceapi.azurewebsites.net"
     json        = file("./example.json")
+    # json = "http://conferenceapi.azurewebsites.net/?format=json"
   }
 
   create_rg      = false
-  rg_name        = "1-27201464-playground-sandbox"
+  rg_name        = "1-17402b39-playground-sandbox"
   create_product = true
   product_name   = "scott Product"
   create_apim    = true
