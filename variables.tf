@@ -49,3 +49,8 @@ variable "sku_count" {
     error_message = "The sku_count must be one of the following: 1, 2."
   }
 }
+
+variable "rg_name" {
+  type    = string
+  default = "1-e367fa9f-playground-sandbox"
+}
