@@ -37,3 +37,4 @@ terraform.rc
 
 */.vscode/*
 */az_function/*
+**/node_modules**

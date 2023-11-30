@@ -102,7 +102,7 @@ resource "azurerm_api_management_api" "example_manual" {
   revision            = "1"
   display_name        = "pizzatoppingsapi"
   protocols           = ["https"]
-  service_url         = "https://toppings.azurewebsites.net/api"
+  service_url         = "https://${azurerm_windows_function_app.example.default_hostname}/api"
 }
 
 resource "azurerm_api_management_product_api" "example_mock" {
@@ -123,6 +123,28 @@ resource "azurerm_api_management_api_operation" "example" {
   method              = "GET"
   url_template        = "/get-toppings"
   description         = "Get Toppings"
+  response {
+    status_code = 200
+    representation {
+      content_type = "application/json"
+      example {
+        name  = "default"
+        value = "{ \"sampleField\" : \"test\" }"
+      }
+    }
+  }
+}
+
+resource "azurerm_api_management_api_operation" "initiate_operation" {
+  operation_id        = "initiate-toppings"
+  api_name            = azurerm_api_management_api.example_manual.name
+  api_management_name = azurerm_api_management.api.name
+  # resource_group_name = azurerm_resource_group.rg.name    ## looking up existing RG from data.tf
+  resource_group_name = data.azurerm_resource_group.SN.name
+  display_name        = "Initiate Toppings"
+  method              = "GET"
+  url_template        = "/initiate-toppings"
+  description         = "Initiate Toppings"
   response {
     status_code = 200
     representation {
