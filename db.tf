@@ -37,10 +37,3 @@ resource "azurerm_cosmosdb_account" "pizza_db_acct" {
     failover_priority = 0
   }
 }
-
-# resource "azurerm_cosmosdb_table" "toppings_table" {
-#   name                = "toppings"
-#   resource_group_name = data.azurerm_resource_group.SN.name
-#   account_name        = azurerm_cosmosdb_account.pizza_db_acct.name
-#   throughput          = 400
-# }
