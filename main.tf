@@ -83,13 +83,13 @@ resource "azurerm_api_management_product" "example" {
 ### Assign API to Product
 ################################################
 
-resource "azurerm_api_management_product_api" "example" {
-  api_name            = azurerm_api_management_api.example.name
-  product_id          = azurerm_api_management_product.example.product_id
-  api_management_name = azurerm_api_management.api.name
-  # resource_group_name = azurerm_resource_group.rg.name    ## looking up existing RG from data.tf
-  resource_group_name = data.azurerm_resource_group.SN.name
-}
+# resource "azurerm_api_management_product_api" "example" {
+#   api_name            = azurerm_api_management_api.example.name
+#   product_id          = azurerm_api_management_product.example.product_id
+#   api_management_name = azurerm_api_management.api.name
+#   # resource_group_name = azurerm_resource_group.rg.name    ## looking up existing RG from data.tf
+#   resource_group_name = data.azurerm_resource_group.SN.name
+# }
 
 ################################################
 ### Create another API from scratch, assign it to a Product and add GET Operation to it

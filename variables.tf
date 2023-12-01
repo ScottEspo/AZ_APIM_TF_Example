@@ -52,10 +52,10 @@ variable "sku_count" {
 
 variable "rg_name" {
   type    = string
-  default = "1-6b956ae2-playground-sandbox"
+  default = "1-6c67a6df-playground-sandbox"
 }
 
-variable "functionapp" {
-  type    = string
-  default = "./toppings/toppings.zip"
-}
+# variable "functionapp" {
+#   type    = string
+#   default = "./toppings/toppings.zip"
+# }
