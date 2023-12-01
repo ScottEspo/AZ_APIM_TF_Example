@@ -24,16 +24,16 @@ resource "random_string" "azurerm_api_management_name" {
 ### Create APIM Instance
 ################################################
 
-resource "azurerm_api_management" "api" {
-  name = "apiservice${random_string.azurerm_api_management_name.result}"
-  # location = azurerm_resource_group.rg.location   ## looking up existing RG from data.tf
-  location = data.azurerm_resource_group.SN.location
-  # resource_group_name = azurerm_resource_group.rg.name   ## looking up existing RG from data.tf
-  resource_group_name = data.azurerm_resource_group.SN.name
-  publisher_email     = var.publisher_email
-  publisher_name      = var.publisher_name
-  sku_name            = "${var.sku}_${var.sku_count}"
-}
+# resource "azurerm_api_management" "api" {
+#   name = "apiservice${random_string.azurerm_api_management_name.result}"
+#   # location = azurerm_resource_group.rg.location   ## looking up existing RG from data.tf
+#   location = data.azurerm_resource_group.SN.location
+#   # resource_group_name = azurerm_resource_group.rg.name   ## looking up existing RG from data.tf
+#   resource_group_name = data.azurerm_resource_group.SN.name
+#   publisher_email     = var.publisher_email
+#   publisher_name      = var.publisher_name
+#   sku_name            = "${var.sku}_${var.sku_count}"
+# }
 
 ################################################
 ### Import an API
@@ -42,6 +42,8 @@ resource "azurerm_api_management" "api" {
 ### https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/api_management_api
 ################################################
 
+
+#######
 # resource "azurerm_api_management_api" "example" {
 #   name = "example-api"
 #   # resource_group_name = azurerm_resource_group.rg.name    ## looking up existing RG from data.tf
@@ -66,16 +68,16 @@ resource "azurerm_api_management" "api" {
 ### https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/api_management_product_api
 ################################################
 
-resource "azurerm_api_management_product" "example" {
-  product_id          = "test-product"
-  api_management_name = azurerm_api_management.api.name
-  # resource_group_name = azurerm_resource_group.rg.name    ## looking up existing RG from data.tf
-  resource_group_name   = data.azurerm_resource_group.SN.name
-  display_name          = "Test Product"
-  subscription_required = false
-  approval_required     = false
-  published             = true
-}
+# resource "azurerm_api_management_product" "example" {
+#   product_id          = "test-product"
+#   api_management_name = azurerm_api_management.api.name
+#   # resource_group_name = azurerm_resource_group.rg.name    ## looking up existing RG from data.tf
+#   resource_group_name   = data.azurerm_resource_group.SN.name
+#   display_name          = "Test Product"
+#   subscription_required = false
+#   approval_required     = false
+#   published             = true
+# }
 
 ################################################
 ### Assign API to Product
@@ -94,68 +96,68 @@ resource "azurerm_api_management_product" "example" {
 ### https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/api_management_api_operation
 ################################################
 
-resource "azurerm_api_management_api" "example_manual" {
-  name = "fresh-api"
-  # resource_group_name = azurerm_resource_group.rg.name    ## looking up existing RG from data.tf
-  resource_group_name = data.azurerm_resource_group.SN.name
-  api_management_name = azurerm_api_management.api.name
-  revision            = "1"
-  display_name        = "pizzatoppingsapi"
-  protocols           = ["https"]
-  service_url         = "https://${azurerm_windows_function_app.example.default_hostname}/api"
-}
+# resource "azurerm_api_management_api" "example_manual" {
+#   name = "fresh-api"
+#   # resource_group_name = azurerm_resource_group.rg.name    ## looking up existing RG from data.tf
+#   resource_group_name = data.azurerm_resource_group.SN.name
+#   api_management_name = azurerm_api_management.api.name
+#   revision            = "1"
+#   display_name        = "pizzatoppingsapi"
+#   protocols           = ["https"]
+#   service_url         = "https://${azurerm_windows_function_app.example.default_hostname}/api"
+# }
 
-resource "azurerm_api_management_product_api" "example_mock" {
-  api_name            = azurerm_api_management_api.example_manual.name
-  product_id          = azurerm_api_management_product.example.product_id
-  api_management_name = azurerm_api_management.api.name
-  # resource_group_name = azurerm_resource_group.rg.name    ## looking up existing RG from data.tf
-  resource_group_name = data.azurerm_resource_group.SN.name
-}
+# resource "azurerm_api_management_product_api" "example_mock" {
+#   api_name            = azurerm_api_management_api.example_manual.name
+#   product_id          = azurerm_api_management_product.example.product_id
+#   api_management_name = azurerm_api_management.api.name
+#   # resource_group_name = azurerm_resource_group.rg.name    ## looking up existing RG from data.tf
+#   resource_group_name = data.azurerm_resource_group.SN.name
+# }
 
-resource "azurerm_api_management_api_operation" "example" {
-  operation_id        = "get-toppings"
-  api_name            = azurerm_api_management_api.example_manual.name
-  api_management_name = azurerm_api_management.api.name
-  # resource_group_name = azurerm_resource_group.rg.name    ## looking up existing RG from data.tf
-  resource_group_name = data.azurerm_resource_group.SN.name
-  display_name        = "Get Toppings"
-  method              = "GET"
-  url_template        = "/get-toppings"
-  description         = "Get Toppings"
-  response {
-    status_code = 200
-    representation {
-      content_type = "application/json"
-      example {
-        name  = "default"
-        value = "{ \"sampleField\" : \"test\" }"
-      }
-    }
-  }
-}
+# resource "azurerm_api_management_api_operation" "example" {
+#   operation_id        = "get-toppings"
+#   api_name            = azurerm_api_management_api.example_manual.name
+#   api_management_name = azurerm_api_management.api.name
+#   # resource_group_name = azurerm_resource_group.rg.name    ## looking up existing RG from data.tf
+#   resource_group_name = data.azurerm_resource_group.SN.name
+#   display_name        = "Get Toppings"
+#   method              = "GET"
+#   url_template        = "/get-toppings"
+#   description         = "Get Toppings"
+#   response {
+#     status_code = 200
+#     representation {
+#       content_type = "application/json"
+#       example {
+#         name  = "default"
+#         value = "{ \"sampleField\" : \"test\" }"
+#       }
+#     }
+#   }
+# }
 
-resource "azurerm_api_management_api_operation" "initiate_operation" {
-  operation_id        = "initiate-toppings"
-  api_name            = azurerm_api_management_api.example_manual.name
-  api_management_name = azurerm_api_management.api.name
-  # resource_group_name = azurerm_resource_group.rg.name    ## looking up existing RG from data.tf
-  resource_group_name = data.azurerm_resource_group.SN.name
-  display_name        = "Initiate Toppings"
-  method              = "GET"
-  url_template        = "/initiate-toppings"
-  description         = "Initiate Toppings"
-  response {
-    status_code = 200
-    representation {
-      content_type = "application/json"
-      example {
-        name  = "default"
-        value = "{ \"sampleField\" : \"test\" }"
-      }
-    }
-  }
-}
+# resource "azurerm_api_management_api_operation" "initiate_operation" {
+#   operation_id        = "initiate-toppings"
+#   api_name            = azurerm_api_management_api.example_manual.name
+#   api_management_name = azurerm_api_management.api.name
+#   # resource_group_name = azurerm_resource_group.rg.name    ## looking up existing RG from data.tf
+#   resource_group_name = data.azurerm_resource_group.SN.name
+#   display_name        = "Initiate Toppings"
+#   method              = "GET"
+#   url_template        = "/initiate-toppings"
+#   description         = "Initiate Toppings"
+#   response {
+#     status_code = 200
+#     representation {
+#       content_type = "application/json"
+#       example {
+#         name  = "default"
+#         value = "{ \"sampleField\" : \"test\" }"
+#       }
+#     }
+#   }
+# }
 
 ################################################
 ### Create a MOCK Policy

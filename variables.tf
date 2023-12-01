@@ -52,7 +52,7 @@ variable "sku_count" {
 
 variable "rg_name" {
   type    = string
-  default = "1-8d7bd68c-playground-sandbox"
+  default = "1-6b956ae2-playground-sandbox"
 }
 
 variable "functionapp" {

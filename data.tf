@@ -8,10 +8,10 @@ data "azurerm_resource_group" "SN" {
 #   resource_group_name = var.rg_name
 # }
 
-data "archive_file" "function" {
-  type        = "zip"
-  source_dir  = "${path.module}/toppings"
-  output_path = "${path.module}/toppings.zip"
+# data "archive_file" "function" {
+#   type        = "zip"
+#   source_dir  = "${path.module}/toppings"
+#   output_path = "${path.module}/toppings.zip"
 
-  depends_on = [null_resource.npm]
-}
+#   depends_on = [null_resource.npm]
+# }
