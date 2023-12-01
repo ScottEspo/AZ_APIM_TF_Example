@@ -97,7 +97,7 @@ resource "azurerm_api_management_product" "example" {
 ################################################
 
 resource "azurerm_api_management_api" "example_manual" {
-  name = "fresh-api"
+  name = "toppings-api"
   # resource_group_name = azurerm_resource_group.rg.name    ## looking up existing RG from data.tf
   resource_group_name = data.azurerm_resource_group.SN.name
   api_management_name = azurerm_api_management.api.name
@@ -145,7 +145,7 @@ resource "azurerm_api_management_api_operation" "initiate_operation" {
   resource_group_name = data.azurerm_resource_group.SN.name
   display_name        = "Initiate Toppings"
   method              = "GET"
-  url_template        = "/initiate-toppings"
+  url_template        = "/toppings-init"
   description         = "Initiate Toppings"
   response {
     status_code = 200
