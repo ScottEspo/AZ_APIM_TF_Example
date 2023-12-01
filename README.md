@@ -15,4 +15,8 @@
     - API
     - 2 X API Operation to talk to AZ Function(s) 
 
+
+to get functions associated with app: `az functionapp function list -g <RG_NAME> -n <APP_NAME>`
+can do a foreach and create api operations for each function app function
+
 ![WHAT WE ARE BUILDING!](./arch.jpg "What we are building")
