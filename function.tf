@@ -41,9 +41,7 @@ resource "azurerm_windows_function_app" "example" {
 
   site_config {
     cors {
-      allowed_origins = [
-        "*",
-      "https://portal.azure.com"]
+      allowed_origins = ["*"]
     }
   }
 

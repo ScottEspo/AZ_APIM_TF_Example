@@ -159,6 +159,31 @@ resource "azurerm_api_management_api_operation" "initiate_operation" {
   }
 }
 
+resource "azurerm_api_management_api" "import_from_function" {
+  name                = "importedFromFunctionApp"
+  resource_group_name = data.azurerm_resource_group.SN.name
+  api_management_name = azurerm_api_management.api.name
+  revision            = "1"
+  display_name        = "Example API Import from Function App"
+  path                = "example"
+  protocols           = ["https"]
+
+  # import {
+  #   content_format = "swagger-link-json"
+  #   content_value = "https://espo-pizza-toppings-app.scm.azurewebsites.net/api/functions"
+  #   # content_value  = azurerm_windows_function_app.example.name
+  #   # content_value  = "http://${azurerm_windows_function_app.example.name}.scm.azurewebsites.net/api/functions/?format=json"
+  # }
+}
+
+resource "azurerm_api_management_backend" "function_backend" {
+  name                = "example-backend"
+  resource_group_name = data.azurerm_resource_group.SN.name
+  api_management_name = azurerm_api_management.api.name
+  protocol            = "http"
+  url                 = "https://${azurerm_windows_function_app.example.default_hostname}/api/"
+}
+
 ################################################
 ### Create a MOCK Policy
 ### Tutorial: Mock API responses: https://learn.microsoft.com/en-us/azure/api-management/mock-api-responses?tabs=azure-portal
